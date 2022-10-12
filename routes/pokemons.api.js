@@ -10,15 +10,15 @@ const fs = require("fs");
  */
 
 router.get("/", (req, res, next) => {
-  //input validation
-
-  const allowedFilter = ["type", "name"];
+  //   //input validation
+  const allowedFilter = ["types", "name"];
   try {
     let { page, limit, ...filterQuery } = req.query;
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     //allow title,limit and page query string only
     const filterKeys = Object.keys(filterQuery);
+    //filterKeys = {name,type}
     filterKeys.forEach((key) => {
       if (!allowedFilter.includes(key)) {
         const exception = new Error(`Query ${key} is not allowed`);
@@ -43,24 +43,47 @@ router.get("/", (req, res, next) => {
       filterKeys.forEach((condition) => {
         result = result.length
           ? result.filter(
-              (pokemon) => pokemon[condition] === filterQuery[condition]
+              (pokemon) =>
+                pokemon[condition].includes(filterQuery[condition]) ||
+                pokemon[condition] === filterQuery[condition]
             )
           : data.filter(
-              (pokemon) => pokemon[condition] === filterQuery[condition]
+              (pokemon) => (pokemon) =>
+                pokemon[condition].includes(filterQuery[condition]) ||
+                pokemon[condition] === filterQuery[condition]
             );
       });
     } else {
-      result = pokemon;
+      result = data;
     }
     //then select number of result by offset
     result = result.slice(offset, offset + limit);
 
     //send response
-
+    console.log(filterQuery);
     res.status(200).send(result);
   } catch (error) {
     next(error);
   }
+});
+
+router.get("/:id", function (req, res, next) {
+  const { id } = req.params;
+  const newId = parseInt(id);
+
+  console.log(req.query, res, id);
+  let pokemonJson = fs.readFileSync("pokemons.json", "utf-8");
+  pokemonJson = JSON.parse(pokemonJson);
+  const { data } = pokemonJson;
+
+  let result = [];
+
+  // result = data.filter((e) => e.id === newId);
+  result = data.filter((e) => e.id === 1);
+
+  console.log(result, "index");
+
+  res.send(result);
 });
 
 module.exports = router;
