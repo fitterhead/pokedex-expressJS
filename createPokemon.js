@@ -6,7 +6,7 @@ const createPokemon = async () => {
   convertData = Array.from(convertData);
   let jsonData = JSON.parse(fs.readFileSync("pokemons.json"));
   console.log(convertData, "convertData");
-  convertData = convertData.map((e, index) => {
+  convertData = convertData.map((e) => {
     let newTypes = [e.Type1, e.Type2].map((value) => {
       if (value !== undefined) {
         return value.toLowerCase();
@@ -17,7 +17,7 @@ const createPokemon = async () => {
       id: index,
       name: e.Name,
       types: newTypes,
-      url: `http://localhost:5001/images/${index}.png`,
+      url: `http://localhost:5001/images/${index + 1}.png`,
     };
   });
 
