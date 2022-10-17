@@ -88,9 +88,16 @@ router.get("/:id", function (req, res, next) {
   for (let index = 0; index < data.length; index++) {
     const element = data[index];
     if (element.id === newId) {
-      result.previousPokemon = data[index - 1];
+      // result.previousPokemon = data[index - 1];
+      index - 1 > 0
+        ? (result.previousPokemon = data[index - 1])
+        : (result.previousPokemon = data[data.length - 1]);
+
       result.pokemon = data[index];
-      if (index + 1 < data.length) result.nextPokemon = data[index + 1];
+      // if (index + 1 < data.length) result.nextPokemon = data[index + 1];
+      index + 1 < data.length
+        ? (result.nextPokemon = data[index + 1])
+        : (result.nextPokemon = data[0]);
     }
   }
 
@@ -103,7 +110,7 @@ router.post("/", (req, res, next) => {
   //post input validation
 
   try {
-    const { name, types } = req.body;
+    const { name, types, url } = req.body;
     const pokemonTypes = [
       "bug",
       "dragon",

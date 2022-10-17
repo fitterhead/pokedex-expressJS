@@ -6,19 +6,21 @@ const createPokemon = async () => {
   convertData = Array.from(convertData);
   let jsonData = JSON.parse(fs.readFileSync("pokemons.json"));
   console.log(convertData, "convertData");
-  convertData = convertData.map((e) => {
-    let newTypes = [e.Type1, e.Type2].map((value) => {
-      if (value !== undefined) {
-        return value.toLowerCase();
-      }
-    });
-    newTypes = newTypes.filter((value) => value !== undefined);
-    return {
-      id: index,
-      name: e.Name,
-      types: newTypes,
-      url: `http://localhost:5001/images/${index + 1}.png`,
-    };
+  convertData = convertData.map((e, index) => {
+    while (index <= 721) {
+      let newTypes = [e.Type1, e.Type2].map((value) => {
+        if (value !== undefined) {
+          return value.toLowerCase();
+        }
+      });
+      newTypes = newTypes.filter((value) => value !== undefined);
+      return {
+        id: index,
+        name: e.Name,
+        types: newTypes,
+        url: `http://localhost:5001/images/${index + 1}.png`,
+      };
+    }
   });
 
   jsonData.data = convertData;
